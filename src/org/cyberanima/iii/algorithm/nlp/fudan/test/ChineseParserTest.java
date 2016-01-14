@@ -4,6 +4,6 @@ import org.cyberanima.iii.algorithm.nlp.fudan.ChineseParser;
 
 public class ChineseParserTest {
 	public static void main(String args[]) {
-		ChineseParser.Parse("./testcase/nlp/zh.txt");
+		ChineseParser.Parse("./testcase/algorithm/nlp/zh.txt");
 	}
 }

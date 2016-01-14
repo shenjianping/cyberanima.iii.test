@@ -4,6 +4,6 @@ import org.cyberanima.iii.algorithm.nlp.stanford.EnglishParser;
 
 public class EnglishParserTest {
 	public static void main(String args[]) {
-		EnglishParser.Parse("./testcase/nlp/en.txt");
+		EnglishParser.Parse("./testcase/algorithm/nlp/en.txt");
 	}
 }
