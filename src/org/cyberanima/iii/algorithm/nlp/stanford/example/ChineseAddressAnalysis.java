@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +43,7 @@ public class ChineseAddressAnalysis {
 			while (line != null ) { 
 				//System.out.println(line);
 				String[] splitline = line.split("\\|");
-				String[] addressInfo = new String[6];
+				String[] addressInfo = new String[8];
 				addressInfo[0] = splitline[0];
 				addressInfo[1] = splitline[1];
 				addressInfo[2] = splitline[2];
@@ -206,7 +210,7 @@ public class ChineseAddressAnalysis {
 	public static void PrintSentenceInfo (SentenceInfo sInfo) {
 		String addressSeg = "";
 		
-		System.out.println(sInfo.getSentence());
+		//System.out.println(sInfo.getSentence());
 		
 		for (int i = 0; i < sInfo.getWordposes().size(); i++) {
 			String[] segAddressWordpos = (String[]) sInfo.getWordposes().get(i);
@@ -217,7 +221,7 @@ public class ChineseAddressAnalysis {
 			addressSeg += word + "(" + pos + ")" + "\t";
 		}
 		
-		System.out.println(addressSeg);	
+		//System.out.println(addressSeg);	
 		sInfo.getTree().pennPrint();
 		sInfo.getDependencies().prettyPrint();
 	}
@@ -236,8 +240,8 @@ public class ChineseAddressAnalysis {
 	}
 	
 	
-	public static void HandleUnlabeledAddress(ArrayList<String[]> unlabeledAddress, StanfordCoreNLP pipeline, NaiveBayes nb) {
-		
+	public static ArrayList<String[]> HandleUnlabeledAddress(ArrayList<String[]> unlabeledAddress, StanfordCoreNLP pipeline, NaiveBayes nb) {
+		ArrayList<String[]> handledAddress = new ArrayList<String[]>();
 		
 		for (int i = 0; i < unlabeledAddress.size(); i++) {
 			try {
@@ -245,16 +249,19 @@ public class ChineseAddressAnalysis {
 				//System.out.println(addressInfo[1]);
 				System.out.println(addressInfo[5]);
 				SentenceInfo sInfo = ChineseParser.SegSentence(pipeline, addressInfo[5]);	
-				ClassifyUnlabeledAddress(sInfo, nb);
+				addressInfo[6] = ClassifyUnlabeledAddress(sInfo, nb);
+				handledAddress.add(addressInfo);
 			}
 			catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 		}
+		
+		return handledAddress;
 	}
 	
-	public static void ClassifyUnlabeledAddress(SentenceInfo sInfo, NaiveBayes nb) {
+	public static String ClassifyUnlabeledAddress(SentenceInfo sInfo, NaiveBayes nb) {
 		Attribute attPosition = new Attribute("position");
 		ArrayList<String> lblPos = new ArrayList<String>();
 		lblPos.add("NN");
@@ -370,6 +377,8 @@ public class ChineseAddressAnalysis {
 		}
 		
 		System.out.println(addressCore);
+		
+		return addressCore;
 
 	}
 	
@@ -415,8 +424,6 @@ public class ChineseAddressAnalysis {
 		}
 	}
 	
-	
-	
 	public static void main(String args[]) {
 		ArrayList<String[]> unlabeledAddress = LoadUnlabeledAddress("./examplecase/algorithm/chineseaddressanalysis/unlabeledaddress.txt");
 		ArrayList<String[]> labeledAddress = LoadLabeledAddress("./examplecase/algorithm/chineseaddressanalysis/labeledaddress.txt");
@@ -427,6 +434,6 @@ public class ChineseAddressAnalysis {
 		LoadLabeledAddressToARFF(labeledAddress, pipeline, "./examplecase/algorithm/chineseaddressanalysis/LabeledCAddress.arff");
 		LabeledInstances li = WekaUtils.GetInstancesSetFromARFF("./examplecase/algorithm/chineseaddressanalysis/LabeledCAddress.arff", 2/3f, 4, 0);
 		NaiveBayes nb = NavieBayesClassifier.TrainClassiferFromLabeledInstances(li);
-		HandleUnlabeledAddress(unlabeledAddress, pipeline, nb);		
+		ArrayList<String[]> handledAddress = HandleUnlabeledAddress(unlabeledAddress, pipeline, nb);
 	}
 }

@@ -644,9 +644,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/cyberanima.iii"/>
-	<classpathentry kind="lib" path="lib/stanford-chinese-corenlp-2015-12-08-models.jar"/>
-	<classpathentry kind="lib" path="lib/stanford-corenlp-3.6.0-models.jar"/>
 	<classpathentry kind="lib" path="lib/stanford-corenlp-3.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/weka.jar"/>
+	<classpathentry kind="lib" path="D:/Research/Project/III/Code/cyberanima.iii.elib/stanford-chinese-corenlp-2015-12-08-models.jar"/>
+	<classpathentry kind="lib" path="D:/Research/Project/III/Code/cyberanima.iii.elib/stanford-corenlp-3.6.0-models.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
